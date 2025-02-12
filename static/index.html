@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>회원가입 & 로그인</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    form { margin-bottom: 20px; padding: 10px; border: 1px solid #ccc; width: 300px; }
+    input { display: block; margin-bottom: 10px; width: 90%; padding: 5px; }
+    button { padding: 5px 10px; }
+    #message { margin-top: 20px; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>회원가입</h1>
+  <form id="signup-form">
+    <input type="text" id="signup-name" placeholder="이름" required>
+    <input type="email" id="signup-email" placeholder="이메일" required>
+    <input type="password" id="signup-password" placeholder="비밀번호" required>
+    <button type="submit">회원가입</button>
+  </form>
+
+  <h1>로그인</h1>
+  <form id="login-form">
+    <input type="email" id="login-email" placeholder="이메일" required>
+    <input type="password" id="login-password" placeholder="비밀번호" required>
+    <button type="submit">로그인</button>
+  </form>
+
+  <div id="message"></div>
+
+  <script>
+    const signupForm = document.getElementById('signup-form');
+    const loginForm = document.getElementById('login-form');
+    const messageDiv = document.getElementById('message');
+
+    // 회원가입 폼 제출 시 처리
+    signupForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('signup-name').value;
+      const email = document.getElementById('signup-email').value;
+      const password = document.getElementById('signup-password').value;
+
+      // 백엔드의 POST /users/ 엔드포인트에 데이터를 전송
+      const data = { name: name, email: email, password: password };
+
+      try {
+        const response = await fetch('/users/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        if (response.ok) {
+          const user = await response.json();
+          messageDiv.innerText = '회원가입 성공! 생성된 사용자 ID: ' + user.id;
+        } else {
+          const errorData = await response.json();
+          messageDiv.innerText = '회원가입 실패: ' + errorData.detail;
+        }
+      } catch (error) {
+        messageDiv.innerText = '회원가입 에러: ' + error;
+      }
+    });
+
+    // 로그인 폼 제출 시 처리
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+
+      // 백엔드의 POST /login 엔드포인트에 데이터를 전송 (로그인 엔드포인트는 별도 구현 필요)
+      const data = { email: email, password: password };
+
+      try {
+        const response = await fetch('/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        if (response.ok) {
+          const result = await response.json();
+          messageDiv.innerText = '로그인 성공! 토큰: ' + result.token;
+        } else {
+          const errorData = await response.json();
+          messageDiv.innerText = '로그인 실패: ' + errorData.detail;
+        }
+      } catch (error) {
+        messageDiv.innerText = '로그인 에러: ' + error;
+      }
+    });
+  </script>
+</body>
+</html>
