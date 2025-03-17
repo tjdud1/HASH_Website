@@ -251,7 +251,12 @@
           <div class="signup-container">
             <h1>회원가입</h1>
             <div class="input-group">
-              <label for="userId">아이디(name)</label>
+              <label for="userName">이름</label>
+              <input type="text" id="userName" placeholder="이름 입력">
+              <p class="message" id="userNameMessage"></p>
+            </div>
+            <div class="input-group">
+              <label for="userId">아이디</label>
               <input type="text" id="userId" placeholder="아이디 입력 (6~20자)">
               <p class="message" id="userIdMessage"></p>
             </div>
@@ -285,9 +290,11 @@
         
         signupButton.addEventListener("click", async function () {
             const userId = document.getElementById("userId").value.trim();
+            const username = document.getElementById("username").value.trim();
             const password = document.getElementById("password").value.trim();
             const email = document.getElementById("email").value.trim();
             const userIdMessage = document.getElementById("userIdMessage");
+            const usernameMessage = document.getElementById("usernameMessage");
             const passwordMessage = document.getElementById("passwordMessage");
 
             // 유효성 검사
